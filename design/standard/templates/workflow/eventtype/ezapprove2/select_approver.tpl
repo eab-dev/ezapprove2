@@ -2,13 +2,15 @@
 
 <div id="maincontent"><div id="fix">
 
+
+
 <div id="maincontent-design">
 
-{def $base_uri=concat( 'ezapprove2/select_approver/', $approval_status.id, '/', $approval_status.step )}
+{def $base_uri=concat( 'ezapprove2/select_approver/', $approval_status.id, '/0')}
 
 <form name="SelectApprover" method="post" action={$base_uri|ezurl}>
 
-<div class="context-block">
+<!--<div class="context-block">-->
 {* DESIGN: Header START *}<div class="box-header"><div class="box-tc"><div class="box-ml"><div class="box-mr"><div class="box-tl"><div class="box-tr">
 <h2 class="context-title">{'Select users for content approval <%object_name>'|i18n( 'ezapprove2',, hash( '%object_name', $object.name ) )|wash}</h2>
 
@@ -19,13 +21,33 @@
 {* DESIGN: Content START *}<div class="box-ml"><div class="box-mr"><div class="box-content">
 
 <div class="context-attributes">
+    <h5>
+{'You must select at least an approver, either among the previously selected ones or all available users'|i18n('ezapprove2')}
+    </h5>
+{if is_set($saved_approvers)}
+<div id="saved-approvers"
 
-{if $warning}
-    <div class="message-warning">
-        <h2>{$warning|wash}</h2>
-    </div>
-{/if}
+     <h5>
+         {'Select your approver among previously selected approvers'|i18n('ezapprove2')}
+     </h5>
+    <table class="list" cellspacing="0">
+        
+        <tr><th class="tight">{'Remove'|i18n('ezapprove2')}</th>
+            <th>{'Approver'|i18n('ezapprove2')}</th>
+            <th class="tight">{'Use as Approver'|i18n('ezapprove')}</th>
+        </tr>
+        {foreach $saved_approvers as $saved_approver sequence array( bglight, bgdark ) as $sequence}
+        <tr class="{$sequence}">
+            <td class="tight"> <input type="checkbox" name="ForgetApproveUserIDArray[]" value="{$saved_approver.approver_user_id|wash}" /></td>
+            <td>{$saved_approver.approver.contentobject.name}</td>
+            <td class="tight"><input type="checkbox" name="SelectedSavedApprovers[]" value="{$saved_approver.approver_user_id|wash}"/></td>
+        </tr>
+    {/foreach}
 
+</table>
+<input class="button" type="submit" name="ForgetApproveUsers" value="{'Forget selected'|i18n( 'design/admin/workflow/eventtype/edit' )}" />
+</div>
+ {/if}
 {if $approval_status.approve2_event.require_all_approve|eq(2)}
     <div class="block">
         <div class="element">
@@ -46,9 +68,10 @@
 {if $approval_status.approve_user_list}
     <table class="list" cellspacing="0">
     <tr>
-        <th class="tight">&nbsp;</th>
+        <th class="tight">{'Select'|i18n('ezapprove2')}</th>
         <th>{'Approve users'|i18n( 'design/admin/workflow/eventtype/edit' )}</th>
     </tr>
+
     {foreach $approval_status.approve_user_list as $approveUserLink
              sequence array( bglight, bgdark ) as $sequence}
         <tr class="{$sequence}">
@@ -64,7 +87,7 @@
 
 <input class="button" type="submit" name="RemoveApproveUsers" value="{'Remove selected'|i18n( 'design/admin/workflow/eventtype/edit' )}" />
 <input class="button" type="submit" name="AddApproveUsers" value="{'Add users'|i18n( 'design/admin/workflow/eventtype/edit' )}" />
-
+<input type="hidden"  name="startNodeId" value="{$start_node}" />
 </div>
 
 </div>

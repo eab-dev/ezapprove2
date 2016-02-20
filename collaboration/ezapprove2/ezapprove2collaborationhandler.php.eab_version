@@ -306,25 +306,22 @@ class eZApprove2CollaborationHandler extends eZCollaborationItemHandler {
                         eZXApproveStatusUserLink::RoleApprover );
 
 		    // Added by EAB 
-                    /* if ( !$approveStatusUserLink ) {
-		        echo "User is not approver for approve status";
+                    if ( !$approveStatusUserLink ) {
 			eZDebug::writeDebug( 'User is not approver for approve status : ' . $approveStatus->attribute( 'id' ) . ', user ID : ' . eZUser::currentUserID() );
 			return false;
-                    } */
+                    }
 
 
 			$contentObject = $approveStatus->attribute( 'contentobject' );
                     // Check if user can edit object
                     if ( !$contentObject ||
                         !$contentObject->attribute( 'can_edit' ) ) {
-			echo "insufficient access to edit object : " . $contentObject->attribute( 'id' );
                         eZDebug::writeError( 'insufficient access to edit object : ' . $contentObject->attribute( 'id' ) );
                         return false;
                     }
                     // workflow, and abort all previous pending elements.
                     $db = eZDB::instance();
                     if ( !$approveStatus ) {
-			echo "Could not fetch approve status for collaboration id : " . $collaborationItem->attribute( 'id' );
                         eZDebug::writeError( 'Could not fetch approve status for collaboration id : ' . $collaborationItem->attribute( 'id' ) );
                         return false;
                     }
@@ -354,17 +351,12 @@ class eZApprove2CollaborationHandler extends eZCollaborationItemHandler {
                     $oldVersion->setAttribute( 'status', eZContentObjectVersion::STATUS_DRAFT);
                     $oldVersion->sync();
 
-                    // Abort collaboration item. Added by KK. if condition added by EAB
-		    if ($approveStatusUserLink)
-		    {
-			    $collaborationItem->setIsActive( false );
-			    $approveStatusUserLink->setAttribute( 'approve_status', eZXApproveStatusUserLink::StatusEditedByApprover);
-			    $approveStatusUserLink->store();
-			    $collaborationItem->setAttribute( 'status', eZCollaborationItem::STATUS_INACTIVE );
-		    }
+                    // Abort collaboration item. Added by KK
+                    $collaborationItem->setIsActive( false );
+                    $approveStatusUserLink->setAttribute( 'approve_status', eZXApproveStatusUserLink::StatusEditedByApprover);
+                    $approveStatusUserLink->store();
+                    $collaborationItem->setAttribute( 'status', eZCollaborationItem::STATUS_INACTIVE );
                     $db->commit();
-		    
-		    
                     // 4. Redirect user to new object.
                     //set some variables in the module view:
 
