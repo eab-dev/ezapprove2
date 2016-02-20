@@ -56,7 +56,12 @@ class eZApprove2Type extends eZWorkflowEventType {
     const COLLABORATION_CREATED = 1;
 
     function __construct() {
-        $this->eZWorkflowEventType( eZApprove2Type::ID, ezi18n( 'kernel/workflow/event', "Approve2" ) );
+        if ( class_exists( 'ezpI18n' )) {
+            $this->eZWorkflowEventType( eZApprove2Type::ID, ezpI18n::tr( 'kernel/workflow/event', "Approve2" ) );
+        }
+        else {
+            $this->eZWorkflowEventType( eZApprove2Type::ID, ezi18n( 'kernel/workflow/event', "Approve2" ) );
+        }
         $this->setTriggerTypes( array( 'content' => array( 'publish' => array( 'before' ) ) ) );
     }
 
