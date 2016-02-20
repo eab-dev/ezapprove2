@@ -17,3 +17,8 @@ workflows. New features:
 * Select multiple approvers, and minimum number of approvers who must approve the content.
 * Allow author to select approver(s)/proof readers.
 * Approvers can edit the pending objects.
+
+Installation and Usage
+----------------------
+
+See [INSTALL.txt](INSTALL.txt) for more information.
